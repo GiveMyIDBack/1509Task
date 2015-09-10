@@ -1,4 +1,7 @@
-package DBTools2;
+package DBTools3.copy;
+
+
+
 import java.sql.PreparedStatement;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -16,6 +19,7 @@ public class DBTool {
 	    Connection conn=null;
 	    PreparedStatement ps=null;//PreparedStatement,Statement
 	    ResultSet rs;
+	   
 	    
 	    
 	    public void getConn(String User,String Password){
@@ -110,7 +114,7 @@ public class DBTool {
 	            String origin = "";
 	            String destination = "";
 	            int date=0;
-	            int time=0;
+	            String time="";
 	            int first_num=0;
 	            int business_num=0;
 	            int economic_num=0;
@@ -124,7 +128,7 @@ public class DBTool {
 					destination = rs.getString("destination");
 					//name = new String(name.getBytes("ISO-8859-1"), "GB2312");
 					date=rs.getInt("date");
-					time=rs.getInt("time");
+					time=rs.getString("time");
 					first_num=rs.getInt("first_num");
 					business_num=rs.getInt("business_num");
 					economic_num=rs.getInt("economic_num");
@@ -158,7 +162,7 @@ public class DBTool {
 		            String origin2 = "";
 		            String destination2 = "";
 		            int date2=0;
-		            int time2=0;
+		            String time2="";
 		            int first_num2=0;
 		            int business_num2=0;
 		            int economic_num2=0;
@@ -173,7 +177,7 @@ public class DBTool {
 						destination = rs.getString("A.destination");
 						//name = new String(name.getBytes("ISO-8859-1"), "GB2312");
 						date=rs.getInt("A.date");
-						time=rs.getInt("A.time");
+						time=rs.getString("A.time");
 						first_num=rs.getInt("A.first_num");
 						business_num=rs.getInt("A.business_num");
 						economic_num=rs.getInt("A.economic_num");
@@ -184,7 +188,7 @@ public class DBTool {
 						destination2 = rs.getString("B.destination");
 						//name = new String(name.getBytes("ISO-8859-1"), "GB2312");
 						date2=rs.getInt("B.date");
-						time2=rs.getInt("B.time");
+						time2=rs.getString("B.time");
 						first_num2=rs.getInt("B.first_num");
 						business_num2=rs.getInt("B.business_num");
 						economic_num2=rs.getInt("B.economic_num");
@@ -245,8 +249,8 @@ public class DBTool {
 	        	
 	        	ps = conn.prepareStatement(sql);
 	            ps.setString(1, orderid);
-	            ps.setString(2, cid);
-	            ps.setString(3, aid);
+	            ps.setString(2, aid);
+	            ps.setString(3, cid);
 	            ps.setString(4,seat_type);
 	            ps.setString(5,seatid );
 	            ps.setString(6,sid);
@@ -314,12 +318,107 @@ public class DBTool {
 	        }
 	    }
 	    
+	    public void printSchedule(String CurrentCid){
+	        try {
+	        	String sql="";
+	        	
+	        	sql = "select * from orders  "
+	        	+"where cid = ?  ";
+	        	
+	        	ps = conn.prepareStatement(sql);
+	            ps.setString(1, CurrentCid);
+	            
+	            
+	            ResultSet rs = ps.executeQuery();  
+	            
+	            String orderid="";
+	            String aid = "";	                  
+	            String seat_type="";
+	            String seat_id="";
+	            String sid = "";	                  
+	            String did="";
+	            
+				int count = 0;
+				while (rs.next()) {
+					count++;
+					orderid=rs.getString("orderid");
+					aid = rs.getString("aid");
+					seat_type = rs.getString("seat_type");
+					seat_id = rs.getString("seat_id");
+					sid=rs.getString("sid");
+					did=rs.getString("did");
+					System.out.println((count)+"  "+orderid+"  "+aid+"  "
+							+seat_type+"  "+seat_id+"  "+sid+"  "+did);
+					System.out.println("");
+					
+					
+				}
+				
+					System.out.println("共有 "+count+" 条信息");
+					
+				rs.close();           
+	            
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        } catch (Exception e) {
+					e.printStackTrace();
+			}finally{
+
+	            try {
+	                if (ps!=null) ps.close();
+	                //if(conn!=null) conn.close();
+	            } catch (SQLException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	    }
+	    //没检查呢~~~~
+	    public void prifileUpdate(String CurrentCid,String CurrentIDNum,String CurrentPhone,String CurrentName){
+	        try {
+	        	String sql="";
+	        	
+	        	sql = "update * from client  "
+	        	+"where cid = ?  "
+	        	+"set identify_number= ?  "
+	        	+" , phone= ? "
+	        	+" , name= ? ";
+	        	
+	        	ps = conn.prepareStatement(sql);
+	            ps.setString(1, CurrentCid);
+	            ps.setString(2, CurrentIDNum);
+	            ps.setString(3, CurrentPhone);
+	            ps.setString(4, CurrentName);
+	            
+	            int rs=ps.executeUpdate();  
+	            
+	            if(rs!=0)
+	            	System.out.println("成功修改信息");
+	            else
+	            	System.out.println("错误，请重试");
+ 
+	            } catch (SQLException e) {
+	            e.printStackTrace();
+	        } catch (Exception e) {
+					e.printStackTrace();
+			}finally{
+
+	            try {
+	                if (ps!=null) ps.close();
+	                //if(conn!=null) conn.close();
+	            } catch (SQLException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	    }
+	    
+	    
 	    public static void main(String[] args) {
 	        DBTool myhandler = new DBTool();
 	        myhandler.getConn("root","127127");
 	       //myhandler.getAirline(20100908,"北京","上海");
-	        myhandler.bookTicket("003","MU375","ECONOMIC","17A","002","001");
-	        myhandler.cancelTicket("0DDD961DB8F4443585816A8594A4FE8C");
+	        //myhandler.bookTicket("003","MU375","ECONOMIC","17A","002","001");
+	        //myhandler.cancelTicket("4F38B03F67E5493A977439AF8893B581");
+	        myhandler.printSchedule("003");
 	        try {
                if(myhandler.conn!=null) myhandler.conn.close();
             } catch (SQLException e) {
