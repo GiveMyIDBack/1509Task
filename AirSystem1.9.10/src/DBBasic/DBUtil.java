@@ -530,6 +530,90 @@ public class DBUtil {
 	        return flag;
 	    }
 	    
+	    public boolean checkO_exist(String CurrentOid){
+	    	boolean flag=false;
+	        try {
+	        	String sql="";
+	        	
+	        	sql = "select * from operator  "
+	        	+"where oid = ?  ";
+	        	
+	        	ps = conn.prepareStatement(sql);
+	            ps.setString(1, CurrentOid);
+	            
+	            
+	            ResultSet rs = ps.executeQuery();  
+	            
+	           
+	            
+				
+				if (rs.next()) {
+					
+					flag=true;
+				}
+				
+					
+					
+				rs.close();           
+	            
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        } catch (Exception e) {
+					e.printStackTrace();
+			}finally{
+
+	            try {
+	                if (ps!=null) ps.close();
+	                //if(conn!=null) conn.close();
+	            } catch (SQLException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	        return flag;
+	    }
+	    
+	    public boolean checkAdmin_exist(String CurrentID){
+	    	boolean flag=false;
+	        try {
+	        	String sql="";
+	        	
+	        	sql = "select * from admin  "
+	        	+"where admin_id = ?  ";
+	        	
+	        	ps = conn.prepareStatement(sql);
+	            ps.setString(1, CurrentID);
+	            
+	            
+	            ResultSet rs = ps.executeQuery();  
+	            
+	           
+	            
+				
+				if (rs.next()) {
+					
+					flag=true;
+				}
+				
+					
+					
+				rs.close();           
+	            
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        } catch (Exception e) {
+					e.printStackTrace();
+			}finally{
+
+	            try {
+	                if (ps!=null) ps.close();
+	                //if(conn!=null) conn.close();
+	            } catch (SQLException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	        return flag;
+	    }
+	    
 	    public boolean checkOrder_exist(String CurrentOrderid){
 	    	boolean flag=false;
 	        try {

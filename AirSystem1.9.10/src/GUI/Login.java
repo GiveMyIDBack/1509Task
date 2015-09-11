@@ -5,6 +5,7 @@ package GUI;
 import javax.swing.*;
 
 import java.awt.*; //导入必要的包
+import java.awt.event.KeyEvent;
 
 import Actor.Membership;
 
@@ -24,6 +25,7 @@ public class Login extends JFrame {
 			jLabel2 = new JLabel("密码");
 			jb1 = new JButton("确认");
 			jb2 = new JButton("取消");
+			
 			jp1 = new JPanel();
 			jp2 = new JPanel();
 			jp3 = new JPanel();
@@ -62,6 +64,9 @@ public class Login extends JFrame {
 	    	return this.jPasswordField.getText();
 	    }
 	    
+	    
+	    /*
+	    
 
 		public static void main(String[] args) {
 			Login frame1=new Login();
@@ -69,14 +74,9 @@ public class Login extends JFrame {
 			String str2=frame1.getPassword();
 			
 			Membership me=new Membership(str1,str2);
-			
-			
-			
-			
-			
-			
-			
-			
+
 		}
+		
+		*/
 	}
 	    

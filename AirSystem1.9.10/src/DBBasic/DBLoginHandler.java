@@ -26,30 +26,75 @@ public class DBLoginHandler {
 	    
 	    
 	    //自己注册的会员登录
-	    public void login(String CurrentCid,String CurrentPassword){
+	    public int login(String CurrentID,String CurrentPassword){
+	    	int flag=0;
+	    	System.out.println(CurrentID+"  "+CurrentPassword);
 	    	
-	    	if(!handler.checkC_exist(CurrentCid)){
-	    		System.out.println("该用户不存在");
-	    		return;
+	    	if(!handler.checkC_exist(CurrentID)&&!handler.checkO_exist(CurrentID)&&!handler.checkAdmin_exist(CurrentID)){
+	    		System.out.println("该账户不存在");
+	    		return flag;
 	    	}
+	    	
 	    	try {
 	        	
-	        	String sql = "select cid, password from membership  "
+	        	String sql = "select * from membership  "
 	        	+"where cid = ?  "
 	    		+"and password = ?  ";
 	        	
 	        	ps = conn.prepareStatement(sql);
-	            ps.setString(1, CurrentCid);
+	            ps.setString(1, CurrentID);
 	            ps.setString(2, CurrentPassword);
 	            
 	            ResultSet rs = ps.executeQuery();  
 	            
 				if (rs.next()) {
 					
-					System.out.println("WELCOME  "+CurrentCid);
+					System.out.println("WELCOME  客户 "+CurrentID);
+					flag=1;
 				}
-				else
-					System.out.println("密码错误");
+                else {
+				// System.out.println("密码错误");
+				// 是operator吗？
+				    sql = "select * from operator  " 
+				            + "where oid = ?  " 
+				    		+ "and password = ?  ";
+      
+				    ps = conn.prepareStatement(sql);
+				    ps.setString(1, CurrentID);
+					ps.setString(2, CurrentPassword);
+
+					rs = ps.executeQuery();
+
+					if (rs.next()) {
+
+						System.out.println("WELCOME  操作员 " + CurrentID);
+						flag=2;
+					}
+					else{
+						sql = "select * from admin  " 
+					            + "where admin_id = ?  " 
+					    		+ "and password = ?  ";
+	      
+					    ps = conn.prepareStatement(sql);
+					    ps.setString(1, CurrentID);
+						ps.setString(2, CurrentPassword);
+
+						rs = ps.executeQuery();
+
+						if (rs.next()) {
+
+							System.out.println("WELCOME  管理员 " + CurrentID);
+							flag=3;
+							
+						}
+						else{
+							
+						}
+					}
+
+				}
+				
+
 				rs.close();
 				
 	     
@@ -66,6 +111,7 @@ public class DBLoginHandler {
 	                e.printStackTrace();
 	            }
 	        }
+	    	return flag;
 	    }
 	    //用户自己注册成会员
 	    public void register(String CurrentIDNum,String CurrentPhone,String CurrentName,String CurrentPassword ){
